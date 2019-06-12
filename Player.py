@@ -5,6 +5,7 @@ class Player(object):
     def __init__(self):
         self.deck = Deck()
         self._hand = self.deck.deal()
+        self.won_cards = []
 
     @property
     def pretty_hand(self):
@@ -29,6 +30,9 @@ class Player(object):
         self._hand.remove(chosen)
         print(self.pretty_hand)
         return chosen
+
+    def add_won_card(self, card):
+        self.won_cards.append(card)
     
 """
 my_player = Player()
