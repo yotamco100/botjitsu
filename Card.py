@@ -1,4 +1,3 @@
-import math
 import random
 
 
@@ -13,19 +12,19 @@ class Color(object):
 
 class Element(object):
     FIRE = 0
-    WATER = (2/3)*math.pi
-    SNOW = (4/3)*math.pi
+    WATER = 1
+    SNOW = 2
 
-    increment = (2/3)*math.pi
+    beats = {FIRE: SNOW, SNOW: WATER, WATER: FIRE}
 
     char2elem = {'F': FIRE, 'W': WATER, 'S': SNOW}
     elem2char = {FIRE: 'F', WATER: 'W', SNOW: 'S'}
 
     @staticmethod
     def beats(elem1, elem2):
-        if math.sin(elem1) == math.sin(elem2 + increment):
+        if beats[elem1] == elem2:
             return 1
-        elif math.sin(elem1) == math.sin(elem2 - increment):
+        elif beats[elem2] == elem1:
             return 2
         else:
             return 0
