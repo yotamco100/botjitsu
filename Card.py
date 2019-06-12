@@ -49,6 +49,11 @@ class Card(object):
     def __str__(self):
         return "Card Element: {} \tCard Color: {} \tCard Level: {}".format(Element.elem2str[self.element], Color.color2str[self.color], self.number)
 
+    @staticmethod
+    def battle(card1, card2):
+        if card1.type == card2.type:
+            pass
+
 class Deck(object):
 
     def __init__(self):
