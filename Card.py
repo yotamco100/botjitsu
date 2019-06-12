@@ -9,6 +9,8 @@ class Color(object):
     ORANGE = 'o'
     PURPLE = 'p'
 
+    color2str = {RED:"Red", BLUE:"Blue", GREEN:"Green", YELLOW:"Yellow", ORANGE:"Orange", PURPLE:"Purple"}
+
 
 class Element(object):
     FIRE = 0
@@ -19,6 +21,7 @@ class Element(object):
 
     char2elem = {'F': FIRE, 'W': WATER, 'S': SNOW}
     elem2char = {FIRE: 'F', WATER: 'W', SNOW: 'S'}
+    elem2str = {FIRE: 'Fire', WATER: 'Water', SNOW: 'Snow'}
 
     @staticmethod
     def beats(elem1, elem2):
@@ -39,8 +42,12 @@ class Card(object):
         self.color = color
         self.number = number
 
-    def __str__(self):
+    @property
+    def config(self):
         return Element.elem2char[self.element] + self.color + hex(self.number)[2].upper()
+
+    def __str__(self):
+        return "Card Element: {} \tCard Color: {} \tCard Level: {}".format(Element.elem2str[self.element], Color.color2str[self.color], self.number)
 
 class Deck(object):
 
@@ -58,8 +65,8 @@ class Deck(object):
     def draw(self):
         return self.deck.pop()
     
-    def deal(self):
-        return [self.draw() for _ in range(5)]
+    def deal(self, card_num=4):
+        return [self.draw() for _ in range(card_num)]
 
 
 if __name__ == "__main__":
