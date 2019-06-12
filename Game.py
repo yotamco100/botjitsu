@@ -13,7 +13,7 @@ class Server(object):
     def listen(self, number):
         self.listener.listen()
         socket, _ = self.listener.accept()
-        players[number] = {"socket":socket, "player":Player()}
+        self.players[number] = {"socket":socket, "player":Player()}
 
     def connections(self):
         print("Waiting for player 1...")
@@ -23,7 +23,28 @@ class Server(object):
         print("Both players connected. Starting game...")
         
     def run(self):
-        self.connections()
+        #self.connections()
+        # TESTING
+        self.players[1] = {"socket":None, "player":Player()}
+        self.players[2] = {"socket":None, "player":Player()}
+        # END TESTING
+        #Players are now connected and the show is on the road
+        winner = None
+        while winner is None:
+            self.players[1]["player"].start_turn()
+            self.players[2]["player"].start_turn()
+            if self.is_reversed:
+                print("Watch out! Reverse is active!")
+            #player 1 chooses card
+            card1 = None #1s choice
+            card1 = self.players[1]["player"].choose_card(random.randint(0,4))
+            #player 2 chooses card
+            card2 = None #2s choice
+            card2 = self.players[2]["player"].choose_card(random.randint(0,4))
+            winner = self.round_win(card1, card2)
+        print("Player {} wins!".format(winner))
+
+
         
     def round_win(self, card1, card2):
         # Checks for round winner and adds to won_cards
@@ -32,14 +53,21 @@ class Server(object):
         print("Player 2's Card: {}".format(card2))
 
         winning_player = Card.battle(card1, card2, self.is_reversed)
-
+        winner = None
         if winning_player == 0:
             print("Stalemate")
+            return None
         else:
             print("Player {} wins the round!".format(winning_player))
             winning_card = eval("card" + str(winning_player))
             print("Winning card: " + str(winning_card))
-            #self.players[winning_player]["player"].add_won_card(winning_card)
+            is_win = self.players[winning_player]["player"].check_win(winning_card)
+            print("Won cards:")
+            for card in self.players[winning_player]["player"].won_cards:
+                print(str(card).replace("\t", " "), end=",")
+            print("\n\n")
+            return winning_player if is_win else None
+        
 
         self.is_reversed = False
 
@@ -49,6 +77,4 @@ class Server(object):
 
 if __name__ == "__main__":
     my = Server(8080)
-    card1 = Card(Element.FIRE, Color.RED, 5)
-    card2 = Card(Element.SNOW, Color.GREEN, 7)
-    my.round_win(card1, card2)
+    my.run()
