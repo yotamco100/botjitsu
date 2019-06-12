@@ -62,9 +62,9 @@ class Server(object):
             winning_card = eval("card" + str(winning_player))
             print("Winning card: " + str(winning_card))
             is_win = self.players[winning_player]["player"].check_win(winning_card)
-            print("Won cards:")
+            print("\nWon cards:")
             for card in self.players[winning_player]["player"].won_cards:
-                print(str(card).replace("\t", " "), end=",")
+                print(str(card))
             print("\n\n")
             return winning_player if is_win else None
         

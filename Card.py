@@ -1,7 +1,13 @@
+#Authors: @CiniMinis and @yotamco100
+# Card-Jitsu classes
+
 import random
 
 
 class Color(object):
+    """
+    A Card Color Enum, including conversions to strings
+    """
     RED = 'r'
     BLUE = 'b'
     GREEN = 'g'
@@ -13,6 +19,9 @@ class Color(object):
 
 
 class Element(object):
+    """
+    A Card Element Enum, including conversions to chars and strings
+    """
     FIRE = 0
     WATER = 1
     SNOW = 2
@@ -25,6 +34,12 @@ class Element(object):
 
     @staticmethod
     def beats(elem1, elem2):
+        """
+        An element battle function.
+        
+        Gets two Elements
+        Returns the winning Player's number, or 0 if stalemate.
+        """
         if Element.beats_arr[elem1] == elem2:
             return 1
         elif Element.beats_arr[elem2] == elem1:
@@ -36,21 +51,43 @@ class Element(object):
 
 
 class Card(object):
-
+    """
+    A Card object. Represents a single Card-Jitsu card.
+    """
     def __init__(self, element, color, number):
+        """
+        Creates a new Card.
+
+        Gets an Element (from Enum), Color (from Enum), and number(int).
+        Returns a new Card instance.
+        """
         self.element = element
         self.color = color
         self.number = number
 
     @property
     def config(self):
+        """
+        Config property
+        Returns the card's config in syntax: [element char][color char][number char, in hex]
+        """
         return Element.elem2char[self.element] + self.color + hex(self.number)[2].upper()
 
     def __str__(self):
+        """
+        Card toString
+        Returns a pretty-printed string of the Card object.
+        """
         return "Card Element: {} \tCard Color: {} \tCard Level: {}".format(Element.elem2str[self.element], Color.color2str[self.color], self.number)
 
     @staticmethod
     def battle(card1, card2, is_reversed):
+        """
+        Determines the winner of two Card objects.
+
+        Gets two Cards, is_reversed boolean (game state where lower number wins)
+        Returns the winning player's number.
+        """
         elem_out = Element.beats(card1.element, card2.element)
         if elem_out == 0:
             if card1.number == card2.number:
@@ -63,8 +100,17 @@ class Card(object):
             
 
 class Deck(object):
-
+    """
+    A Deck object. Represents a Deck of Cards, where Cards can be drawn from.
+    """
     def __init__(self):
+        """
+        Creates a new deck.
+        
+        Opens a deck config file and reads Cards in
+        Config syntax, explained above, then shuffles
+        the Deck.
+        """
         self.deck = []
         with open("deck.dcfg", "r") as config:
             for line in config:
@@ -76,16 +122,17 @@ class Deck(object):
         random.shuffle(self.deck)
 
     def draw(self):
+        """
+        Draw one Card from the Deck.
+
+        Returns the top Card and removes it from the Deck.
+        """
         return self.deck.pop()
     
     def deal(self, card_num=4):
+        """
+        Draw card_num Card from the Deck. Used at start of game.
+
+        Returns the top card_num Cards and removes them from the Deck.
+        """
         return [self.draw() for _ in range(card_num)]
-
-
-if __name__ == "__main__":
-    newDeck = Deck()
-    print(len(newDeck.deck))
-    card1 = Card(Element.SNOW, 'g', 5)
-    card2 = Card(Element.SNOW, 'b', 5)
-    print("Card1:{}\ncard2:{}".format(card1, card2))
-    print(Card.battle(card1, card2, False))
