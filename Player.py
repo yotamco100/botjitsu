@@ -1,4 +1,4 @@
-# Authors: @CiniMinies and @yotamco100
+# Authors: @CiniMinis and @yotamco100
 # A Player object for Card-Jitsu.
 
 from Card import *
