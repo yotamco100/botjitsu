@@ -1,9 +1,21 @@
+# Authors: @CiniMinis and @yotamco100
+# Card-Jitsu Server object.
+
 from Player import  *
 import socket
 
 class Server(object):
-
+    """
+    A Card-Jitsu server.
+    Used to manage the game between two players.
+    """
     def __init__(self, port):
+        """
+        Creates a server.
+
+        Gets a port number.
+        Returns a Server instance.
+        """
         self.listener = socket.socket()
         self.listener.bind(("0.0.0.0", port))
         self.players = {}
@@ -11,11 +23,23 @@ class Server(object):
         print("Card Jitsu server initialized.")
     
     def listen(self, number):
+        """
+        Listens for a connection and adds it to the player list.
+
+        Gets a player number to add.
+        Returns None.
+        """
         self.listener.listen()
         socket, _ = self.listener.accept()
         self.players[number] = {"socket":socket, "player":Player()}
 
     def connections(self):
+        """
+        Listens for connections until both players connect.
+
+        Gets None.
+        Returns None.
+        """
         print("Waiting for player 1...")
         self.listen(1)
         print("Waiting for player 2...")
@@ -23,6 +47,14 @@ class Server(object):
         print("Both players connected. Starting game...")
         
     def run(self):
+        """
+        Runs the game.
+        Connects the players and manages the game until a winner is chosen.
+
+        Gets None.
+        Returns None.
+        Prints winner.
+        """
         #self.connections()
         # TESTING
         self.players[1] = {"socket":None, "player":Player()}
@@ -47,8 +79,13 @@ class Server(object):
 
         
     def round_win(self, card1, card2):
-        # Checks for round winner and adds to won_cards
+        """
+        Checks for round winner and adds to won_cards.
+        Also sets the is_reversed global game state parameter.
 
+        Gets the two Chosen cards for the round.
+        Returns the winning player's number, or None if stalemate.
+        """
         print("Player 1's Card: {}".format(card1))
         print("Player 2's Card: {}".format(card2))
 

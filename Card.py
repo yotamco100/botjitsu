@@ -1,4 +1,4 @@
-#Authors: @CiniMinis and @yotamco100
+# Authors: @CiniMinis and @yotamco100
 # Card-Jitsu classes
 
 import random
@@ -6,7 +6,7 @@ import random
 
 class Color(object):
     """
-    A Card Color Enum, including conversions to strings
+    A Card Color Enum, including conversions to strings.
     """
     RED = 'r'
     BLUE = 'b'
@@ -20,7 +20,7 @@ class Color(object):
 
 class Element(object):
     """
-    A Card Element Enum, including conversions to chars and strings
+    A Card Element Enum, including conversions to chars and strings.
     """
     FIRE = 0
     WATER = 1
@@ -37,7 +37,7 @@ class Element(object):
         """
         An element battle function.
         
-        Gets two Elements
+        Gets two Elements.
         Returns the winning Player's number, or 0 if stalemate.
         """
         if Element.beats_arr[elem1] == elem2:
@@ -68,14 +68,14 @@ class Card(object):
     @property
     def config(self):
         """
-        Config property
-        Returns the card's config in syntax: [element char][color char][number char, in hex]
+        Config property.
+        Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
         return Element.elem2char[self.element] + self.color + hex(self.number)[2].upper()
 
     def __str__(self):
         """
-        Card toString
+        Card toString.
         Returns a pretty-printed string of the Card object.
         """
         return "Card Element: {} \tCard Color: {} \tCard Level: {}".format(Element.elem2str[self.element], Color.color2str[self.color], self.number)
@@ -85,7 +85,7 @@ class Card(object):
         """
         Determines the winner of two Card objects.
 
-        Gets two Cards, is_reversed boolean (game state where lower number wins)
+        Gets two Cards, is_reversed boolean (game state where lower number wins).
         Returns the winning player's number.
         """
         elem_out = Element.beats(card1.element, card2.element)
@@ -110,6 +110,9 @@ class Deck(object):
         Opens a deck config file and reads Cards in
         Config syntax, explained above, then shuffles
         the Deck.
+
+        Gets None.
+        Returns a Deck instance.
         """
         self.deck = []
         with open("deck.dcfg", "r") as config:
@@ -125,6 +128,7 @@ class Deck(object):
         """
         Draw one Card from the Deck.
 
+        Gets None.
         Returns the top Card and removes it from the Deck.
         """
         return self.deck.pop()
@@ -133,6 +137,7 @@ class Deck(object):
         """
         Draw card_num Card from the Deck. Used at start of game.
 
+        Gets the number of cards to be drawn.
         Returns the top card_num Cards and removes them from the Deck.
         """
         return [self.draw() for _ in range(card_num)]
