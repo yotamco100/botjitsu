@@ -15,11 +15,11 @@ Any card can be represented using just 3 characters:
 ```
 Where:
 
-Element is either Fire, Water, or Snow, represented as the uppercase first letter of each.
+`Element` is either `Fire`, `Water`, or `Snow`, represented as the uppercase first letter of each.
 
-Color is one of six colors: Red, Blue, Green, Yellow, Orange, or Purple. Represented as the lowercase first letter of each.
+`Color` is one of six colors: `red`, `blue`, `green`, `yellow`, `orange`, or `purple`. Represented as the lowercase first letter of each.
 
-Number is an integer represented in Hexadecimal format.
+`Number` is an integer represented in Hexadecimal format.
 
 For example, a Fire, Purple, 10 card will be written as: `Fp10`.
 
