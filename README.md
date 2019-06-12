@@ -21,7 +21,7 @@ Where:
 
 `Number` is an integer represented in Hexadecimal format.
 
-For example, a Fire, Purple, 10 card will be written as: `Fp10`.
+For example, a Fire, Purple, 10 card will be written as: `FpA`.
 
 ## The Deck
 Since each card is so easily read, a Deck can be easily arranged using a .dcfg file, where each line is a card in DeckConfig syntax.
@@ -38,6 +38,8 @@ Sg8
 For ease of use, each Card and Player have a pretty-printing function they can call to display the cards in a more human-readable format: ```Card Element: Fire,   Card Color: Red,     Card Level: 4```
 
 # The Goal
+In order to win a CardJitsu game, you must be the first player to win 3 rounds with cards, either of all different elements with different colors, or of the same element in different colors.
+
 The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand and each player's "Cards Won" set.
 
 Have fun!
