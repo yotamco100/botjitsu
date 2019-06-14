@@ -47,12 +47,6 @@ type_effectiveness = {
     Elements.SNOW: Elements.WATER,
 }
 
-element_characters = {
-    'F': Elements.FIRE,
-    'W': Elements.WATER,
-    'S': Elements.SNOW
-}
-
 
 def does_beat(first_element, second_element):
     if type_effectiveness[first_element] == second_element:
