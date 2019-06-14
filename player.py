@@ -2,14 +2,13 @@
 # A Player object for Card-Jitsu.
 
 import random
-
+import asyncio
 import cards
 
 
-class Player(object):
+class Player():
     """A Player class. Represents a single player in the game."""
-
-    def __init__(self):
+    def __init__(self, reader, writer):
         """
         Creates a Player instance. Initializes a deck and deals 4 cards.
         """
@@ -17,11 +16,18 @@ class Player(object):
         self._hand = self.deck.deal()
         self.won_cards = []
         
+        self.reader = reader
+        self.writer = writer
+
         self.element_sets = {
             cards.Element.FIRE: set(),
             cards.Element.WATER: set(),
             cards.Element.SNOW: set()
         }
+
+    async def write(self, message):
+        self.writer.write(message.encode())
+        await self.writer.drain()
 
     @property
     def pretty_hand(self):
