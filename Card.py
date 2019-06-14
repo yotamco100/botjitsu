@@ -2,6 +2,7 @@
 # Card-Jitsu classes
 
 import random
+import json
 
 
 class Color(object):
@@ -115,13 +116,13 @@ class Deck(object):
         Returns a Deck instance.
         """
         self.deck = []
-        with open("deck.dcfg", "r") as config:
-            for line in config:
-                elem = Element.char2elem[line[0]]
-                color = line[1]
-                number = int(line[2], base=16)
-                self.deck.append(Card(elem, color, number))
-                # print(self.deck[-1])
+        config = json.load(open('deck.json'))['decks']
+        for line in config:
+            elem = Element.char2elem[line[0]]
+            color = line[1]
+            number = int(line[2], base=16)
+            self.deck.append(Card(elem, color, number))
+            # print(self.deck[-1])
         random.shuffle(self.deck)
 
     def draw(self):
