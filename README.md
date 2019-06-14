@@ -23,8 +23,8 @@ Where:
 
 For example, a Fire, Purple, 10 card will be written as: `FpA`.
 
-Cards of number 10 are power cards, which means that winning with these cards activates their power.
-In our deck, the power of all three power cards is the "reverse" power which causes cards with lower numbers to beat cards with larger numbers in the following round.
+Cards with the number 10 are "Power Cards", which means that winning with these cards activates their power.
+In the tournament deck, the power-up of all three Power Cards is the "Reverse" power-up, which causes cards with lower numbers to beat cards with larger numbers in the following round, but only if the cards played that round share the same element, as explained in the "How do I win a CardJitsu round?" section.
 
 ## The Deck
 Since each card is so easily read, a Deck can be easily arranged using a .dcfg file, where each line is a card in DeckConfig syntax.
@@ -41,7 +41,18 @@ Sg8
 For ease of use, each Card and Player have a pretty-printing function they can call to display the cards in a more human-readable format: ```Card Element: Fire,   Card Color: Red,     Card Level: 4```
 
 # The Goal
+
+## How do I win a CardJitsu round/game?
+
+Consult this handy graphic:
+
+![alt text](https://i.imgur.com/bMHJlW3.png)
+
+Water beats Fire, Fire beats Ice, Ice beats water. If the cards played share the same element, the higher number is used to determine who wins. If the Reverse power-up is in effect, as explained above, the lower number wins. If two cards are exactly the same, a "Stalemate" happens and the round concludes without a winner.
+
 In order to win a CardJitsu game, you must be the first player to win 3 rounds with cards, either of all different elements with different colors, or of the same element in different colors.
+
+## How do I win a BotJitsu Tournament?
 
 The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand, if reverse is active and the cards played in each round.
 
