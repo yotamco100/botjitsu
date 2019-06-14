@@ -92,8 +92,14 @@ class Server(object):
         while winner is None:
             self.players[1]["player"].start_turn()
             self.players[2]["player"].start_turn()
+
             if self.is_reversed:
                 print("Watch out! Reverse is active!")
+                sock1 = self.players[1]["socket"]
+                sock1.send("* ".encode())
+                sock2 = self.players[2]["socket"]
+                sock2.send("* ".encode())
+
            
             #player 1 chooses card
             self.players[1]["card"] = None #1s choice
