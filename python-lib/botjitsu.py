@@ -1,7 +1,7 @@
 # Author: Yotam Cohen
 # A Python library for the BotJitsu tournament
 
-from Player import *
+from player import *
 #import bot_code
 
 
@@ -12,7 +12,7 @@ class Game(object):
     Includes constants, functions, and game
     state variables for ease of use as an API.
     """
-    FULL_DECK = json.load(open('deck.json'))['decks']
+    FULL_DECK = cards.load(open('deck.json'))['decks']
 
     def __init__(self, my_number, my_hand_config):
         #TODO: implement game data
@@ -41,7 +41,7 @@ class Game(object):
         Gets: new_hand(str[], config syntax)
         Returns: None.
         """
-        self.my_player._hand = [Card.cfg2card(new_card) for new_card in new_hand]
+        self.my_player._hand = [cards.Card.cfg2card(new_card) for new_card in new_hand]
 
     def _update_round_winner(self, winning_player, winning_card):
         """
@@ -50,9 +50,9 @@ class Game(object):
         Gets: winning_player (int), winning_card(str, config format)
         """
         if winning_player == self.my_number:
-            self.my_player.add_to_won_cards(Card.cfg2card(winning_card))
+            self.my_player.add_to_won_cards(cards.Card.cfg2card(winning_card))
         else:
-            self.enemy_player.add_to_won_cards(Card.cfg2card(winning_card))
+            self.enemy_player.add_to_won_cards(cards.Card.cfg2card(winning_card))
 
 
     # TODO: add more useful API methods

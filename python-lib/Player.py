@@ -1,22 +1,24 @@
 # Authors: @CiniMinis and @yotamco100
 # A Player object for Card-Jitsu.
 
-from Card import *
+import cards
+
 
 class Player(object):
-    """
-    A Player class. Represents a single player in the game.
-    """
+    """A Player class. Represents a single player in the game."""
+
     def __init__(self, hand_config):
         """
-        Creates a Player instance. Inits a Deck and deals 4 cards.
-
-        Gets None.
-        Returns a Player instance.
+        Creates a Player instance for the API using a given hand config.
         """
-        self._hand = [Card.cfg2card(cfg_str) for cfg_str in hand_config]
+        self._hand = [cards.Card.cfg2card(cfg_str) for cfg_str in hand_config]
         self._won_cards = []
-        self.element_sets = {Element.FIRE: set(), Element.WATER: set(), Element.SNOW: set()}
+        
+        self.element_sets = {
+            cards.Elements.FIRE: set(),
+            cards.Elements.WATER: set(),
+            cards.Elements.SNOW: set()
+        }
 
     @property
     def pretty_hand(self):
@@ -24,10 +26,8 @@ class Player(object):
         Pretty Hand Property.
         Returns a pretty-printed version of the Player's hand.
         """
-        hand_str = ""
-        for index, card in enumerate(self._hand):
-            hand_str += str(index) + "." + " " + str(card) + "\n"
-        return hand_str
+        return '\n'.join(f"{index}. {card}"
+                         for index, card in enumerate(self._hand))
 
     @property
     def hand(self):
@@ -36,47 +36,16 @@ class Player(object):
         Returns the Player's hand in csv format, where each
         Card is represented in Config syntax.
         """
-        hand_str = ""
-        for card in self._hand:
-            hand_str += card.config + ","
-        return hand_str[:-1]
+        return ','.join(card.config for card in self._hand)
 
-    @property
-    def pretty_won_cards(self):
-        """
-        Pretty Won Cards Property.
-        Returns a pretty-printed version of the Player's won cards.
-        """
-        won_cards_str = ""
-        for index, card in enumerate(self._won_cards):
-            won_cards_str += str(index) + "." + " " + str(card) + "\n"
-        return won_cards_str
-
-    @property
-    def won_cards(self):
-        """
-        won cards Property.
-        Returns the Player's won cards in csv format, where each
-        Card is represented in Config syntax.
-        """
-        won_cards_str = ""
-        for card in self._won_cards:
-            won_cards_str += card.config + ","
-        return won_cards_str[:-1]
-    
     def choose_card(self, card_index):
-        """
-        Plays a card from the Player's hand.
-
-        Gets the Card's index in the hand.
-        Returns the chosen Card instance.
-        """
+        """Plays a card from the Player's hand."""
         try:
             chosen = self._hand[card_index]
             self._hand.remove(chosen)
         except KeyError:
-            chosen = self._hand[random.randint(0,4)]
-        #print(self.pretty_hand)
+            chosen = cards.random.choice(self._hand)
+
         return chosen
 
     def add_to_won_cards(self, card):
