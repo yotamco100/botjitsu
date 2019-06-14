@@ -3,8 +3,13 @@
 
 from Player import *
 import socket
+import asyncio
 import threading
 import time
+
+
+def receive_connection(reader, writer):
+    
 
 
 class Server(object):
@@ -38,7 +43,7 @@ class Server(object):
         socket.send((str(number) + "\n").encode())
         self.players[number] = {"socket": socket, "player": Player()}
 
-    def connections(self):
+    def receive_connection(self):
         """
         Listens for connections until both players connect.
 
@@ -175,5 +180,11 @@ class Server(object):
 
 
 if __name__ == "__main__":
-    my = Server(8080)
-    my.run()
+    host, port = 'localhost', 14683
+    print(f"Server opened with IP {host} and port {port}")
+
+    loop = asyncio.get_event_loop()
+    coroutine = asyncio.start_server(receive_connection,
+                                     host=host,
+                                     port=port,
+                                     loop=loop)
