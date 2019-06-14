@@ -7,16 +7,15 @@ class Player(object):
     """
     A Player class. Represents a single player in the game.
     """
-    def __init__(self):
+    def __init__(self, hand_config, won_cards_config):
         """
         Creates a Player instance. Inits a Deck and deals 4 cards.
 
         Gets None.
         Returns a Player instance.
         """
-        self.deck = Deck()
-        self._hand = self.deck.deal()
-        self.won_cards = []
+        self._hand = [Card.cfg2card(cfg_str) for cfg_str in hand_config]
+        self.won_cards = [Card.cfg2card(cfg_str) for cfg_str in won_cards_config]
         self.element_sets = {Element.FIRE: set(), Element.WATER: set(), Element.SNOW: set()}
 
     @property
