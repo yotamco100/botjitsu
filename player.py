@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.6
 # Authors: @CiniMinis and @yotamco100
 # A Player object for Card-Jitsu.
 
@@ -17,6 +16,7 @@ class Player(object):
         self.deck = cards.Deck()
         self._hand = self.deck.deal()
         self.won_cards = []
+        
         self.element_sets = {
             cards.Element.FIRE: set(),
             cards.Element.WATER: set(),
@@ -47,18 +47,12 @@ class Player(object):
         #print(self.pretty_hand)
 
     def choose_card(self, card_index):
-        """
-        Plays a card from the Player's hand.
-
-        Gets the Card's index in the hand.
-        Returns the chosen Card instance.
-        """
+        """Plays a card from the Player's hand."""
         try:
             chosen = self._hand[card_index]
             self._hand.remove(chosen)
         except KeyError:
-            chosen = self._hand[random.randint(0, 4)]
-        #print(self.pretty_hand)
+            chosen = random.chocie(self._hand)
 
         return chosen
 
