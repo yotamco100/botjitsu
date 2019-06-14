@@ -124,7 +124,7 @@ Level: {self.number}"""
         Gets: Card Config(str).
         Returns: Card object(Card).
         """
-        elem = element_characters[cfg_str[0]]
+        elem = Elements(cfg_str[0])
         color = cfg_str[1]
         number = int(cfg_str[2], base=16)
         return Card(elem, color, number)
