@@ -89,7 +89,7 @@ When a player wins, a message is sent to both players saying which player won, w
 Player no_of_winning_player wins!
 
 ## Example
-The following is an exanple of a quick game which shows all aspects of the game, where messages preceeded by > are sent to the server.
+The following is an exanple of a quick game in netcat which shows all aspects of the game, where messages preceeded by > are sent to the server.
 ```
 1
 FyA,WoA,Wo5,SgA,Fg8
