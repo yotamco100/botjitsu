@@ -1,7 +1,7 @@
 # Author: Yotam Cohen
 # A Python library for the BotJitsu tournament
 
-from player import *
+from Player import *
 #import bot_code
 
 

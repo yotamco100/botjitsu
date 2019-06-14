@@ -89,7 +89,7 @@ class Server(object):
         Returns None.
         Prints winner.
         """
-        self.connections()
+        self.receive_connection()
         # TESTING
         #self.players[1] = {"socket":None, "player":Player()}
         #self.players[2] = {"socket":None, "player":Player()}

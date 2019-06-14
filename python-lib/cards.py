@@ -36,18 +36,23 @@ class Elements(Enum):
     """
     A Card Element Enum used to distinguish between the different types of elements.
     """
-    FIRE = 0
-    WATER = 1
-    SNOW = 2
+    FIRE = 'F'
+    WATER = 'W'
+    SNOW = 'S'
 
-char2elem = {'F': Elements.FIRE, 'W': Elements.WATER, 'S': Elements.SNOW}
-elem2char = {Elements.FIRE: 'F', Elements.WATER: 'W', Elements.SNOW: 'S'}
 
 type_effectiveness = {
     Elements.FIRE: Elements.SNOW,
     Elements.WATER: Elements.FIRE,
     Elements.SNOW: Elements.WATER,
 }
+
+element_characters = {
+    'F': Elements.FIRE,
+    'W': Elements.WATER,
+    'S': Elements.SNOW
+}
+
 
 def does_beat(first_element, second_element):
     if type_effectiveness[first_element] == second_element:
@@ -119,7 +124,7 @@ Level: {self.number}"""
         Gets: Card Config(str).
         Returns: Card object(Card).
         """
-        elem = cfg_str[0]
+        elem = element_characters[cfg_str[0]]
         color = cfg_str[1]
         number = int(cfg_str[2], base=16)
         return Card(elem, color, number)
