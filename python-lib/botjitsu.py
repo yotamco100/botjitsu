@@ -14,8 +14,9 @@ class Game(object):
     """
     FULL_DECK = json.load(open('deck.json'))['decks']
 
-    def __init__(self, my_hand_config):
+    def __init__(self, my_number, my_hand_config):
         #TODO: implement game data
+        self.my_number = my_number
         self.my_player = Player(my_hand_config)
         self.enemy_player = Player([])  # since you don't know the enemy's hand.
         # enemy_player can keep track of the opponent's won_cards.
@@ -42,6 +43,18 @@ class Game(object):
         """
         self.my_player._hand = [Card.cfg2card(new_card) for new_card in new_hand]
 
+    def _update_round_winner(self, winning_player, winning_card):
+        """
+        Updates the Player's won_cards with the winning card.
+
+        Gets: winning_player (int), winning_card(str, config format)
+        """
+        if winning_player == self.my_number:
+            self.my_player.add_to_won_cards(Card.cfg2card(winning_card))
+        else:
+            self.enemy_player.add_to_won_cards(Card.cfg2card(winning_card))
+
+
     # TODO: add more useful API methods
 
     
@@ -51,12 +64,11 @@ class Game(object):
 now, in context of the API
 (API init game shit)
 while winner is None:
-    bot_1_choice = bot_1_code.do_turn(game)?
-    bot_2_choice = bot_2_code.do_turn(game)?
+    bot_choice = bot_code.do_turn(game)
     # maybe, idk how we'll truly implement it yet
     send card choices
     receive round data
-    update game accordingly
+    update game accordingly (game._update_hand(), game._update_round_winner()...)
     check for winner
 done
 """
