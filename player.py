@@ -20,9 +20,9 @@ class Player():
         self.writer = writer
 
         self.element_sets = {
-            cards.Element.FIRE: set(),
-            cards.Element.WATER: set(),
-            cards.Element.SNOW: set()
+            cards.Elements.FIRE: set(),
+            cards.Elements.WATER: set(),
+            cards.Elements.SNOW: set()
         }
 
     async def write(self, message):
@@ -58,7 +58,7 @@ class Player():
             chosen = self._hand[card_index]
             self._hand.remove(chosen)
         except KeyError:
-            chosen = random.chocie(self._hand)
+            chosen = random.choice(self._hand)
 
         return chosen
 
