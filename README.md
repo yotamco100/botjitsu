@@ -44,6 +44,24 @@ For ease of use, each Card and Player have a pretty-printing function they can c
 You are more than welcome to read more about cardjitsu play in the club penguin wiki:
 https://clubpenguin.fandom.com/wiki/Card-Jitsu
 
+# The Goal
+
+## How do I win a CardJitsu round/game?
+
+Consult this handy graphic:
+
+![alt text](https://i.imgur.com/bMHJlW3.png)
+
+Water beats Fire, Fire beats Ice, Ice beats water. If the cards played share the same element, the higher number is used to determine who wins. If the Reverse power-up is in effect, as explained above, the lower number wins. If two cards are exactly the same, a "Stalemate" happens and the round concludes without a winner.
+
+In order to win a CardJitsu game, you must be the first player to win 3 rounds with cards, either of all different elements with different colors, or of the same element in different colors.
+
+## How do I win a BotJitsu Tournament?
+
+The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand, if reverse is active and the cards played in each round.
+
+Good Luck!
+
 # Game Interface
 
 ## Player Number
@@ -83,21 +101,3 @@ FyA,Wo5,SgA,Fg8,Wp4
 SgA vs. Wo5: 1 wins!
 Player 1 wins!
 ```
-
-# The Goal
-
-## How do I win a CardJitsu round/game?
-
-Consult this handy graphic:
-
-![alt text](https://i.imgur.com/bMHJlW3.png)
-
-Water beats Fire, Fire beats Ice, Ice beats water. If the cards played share the same element, the higher number is used to determine who wins. If the Reverse power-up is in effect, as explained above, the lower number wins. If two cards are exactly the same, a "Stalemate" happens and the round concludes without a winner.
-
-In order to win a CardJitsu game, you must be the first player to win 3 rounds with cards, either of all different elements with different colors, or of the same element in different colors.
-
-## How do I win a BotJitsu Tournament?
-
-The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand, if reverse is active and the cards played in each round.
-
-Have fun!
