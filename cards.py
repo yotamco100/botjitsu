@@ -36,15 +36,23 @@ class Elements(Enum):
     """
     A Card Element Enum used to distinguish between the different types of elements.
     """
-    FIRE = 0
-    WATER = 1
-    SNOW = 2
+    FIRE = 'F'
+    WATER = 'W'
+    SNOW = 'S'
+
 
 type_effectiveness = {
     Elements.FIRE: Elements.SNOW,
     Elements.WATER: Elements.FIRE,
     Elements.SNOW: Elements.WATER,
 }
+
+element_characters = {
+    'F': Elements.FIRE,
+    'W': Elements.WATER,
+    'S': Elements.SNOW
+}
+
 
 def does_beat(first_element, second_element):
     if type_effectiveness[first_element] == second_element:
@@ -75,7 +83,7 @@ class Card():
         Config property.
         Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
-        return f"{self.element.name}{self.color.name}{:x}".format(self.number)
+        return f"{self.element.name}{self.color.name}{hex(number)[2:].upper()}"
 
     def __str__(self):
         """
@@ -130,6 +138,8 @@ class Deck(object):
 
             for line in decks['decks']:
                 element, color, number = line
+                element = Elements(element)
+                color = Colors(int(color))
                 self.deck.append(Card(element, color, number))
         
         random.shuffle(self.deck)
