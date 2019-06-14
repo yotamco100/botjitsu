@@ -59,8 +59,11 @@ class Player(object):
         Gets the Card's index in the hand.
         Returns the chosen Card instance.
         """
-        chosen = self._hand[card_index]
-        self._hand.remove(chosen)
+        try:
+            chosen = self._hand[card_index]
+            self._hand.remove(chosen)
+        except KeyError:
+            chosen = self._hand[random.randint(0,4)]
         #print(self.pretty_hand)
         return chosen
 

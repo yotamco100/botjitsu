@@ -3,6 +3,8 @@
 
 from Player import  *
 import socket
+import threading
+import time
 
 class Server(object):
     """
@@ -31,6 +33,7 @@ class Server(object):
         """
         self.listener.listen()
         socket, _ = self.listener.accept()
+        socket.send((str(number) + "\n").encode())
         self.players[number] = {"socket":socket, "player":Player()}
 
     def connections(self):
@@ -45,6 +48,30 @@ class Server(object):
         print("Waiting for player 2...")
         self.listen(2)
         print("Both players connected. Starting game...")
+    
+    @staticmethod
+    def card_selection(player_dict):
+        """
+        Queries the player for his selected card.
+        Sends the player's hand and manages the card selection
+
+        Gets client socket and the player object.
+        Returns the selected card.
+        Prints None.
+        """
+        player = player_dict["player"]
+        client = player_dict["socket"]
+        card = None
+        try:
+            client.send((player.hand + "\n").encode())
+            client.settimeout(60) # 0.3
+            selection = client.recv(256)
+            client.settimeout(None)
+            card = player.choose_card(int(selection.decode()[0]))
+        except Exception as e:
+            print(e)
+            card = player.choose_card(random.randint(0,4))
+        player_dict["card"] = card
         
     def run(self):
         """
@@ -55,10 +82,10 @@ class Server(object):
         Returns None.
         Prints winner.
         """
-        #self.connections()
+        self.connections()
         # TESTING
-        self.players[1] = {"socket":None, "player":Player()}
-        self.players[2] = {"socket":None, "player":Player()}
+        #self.players[1] = {"socket":None, "player":Player()}
+        #self.players[2] = {"socket":None, "player":Player()}
         # END TESTING
         #Players are now connected and the show is on the road
         winner = None
@@ -67,14 +94,32 @@ class Server(object):
             self.players[2]["player"].start_turn()
             if self.is_reversed:
                 print("Watch out! Reverse is active!")
+           
             #player 1 chooses card
-            card1 = None #1s choice
-            card1 = self.players[1]["player"].choose_card(random.randint(0,4))
+            self.players[1]["card"] = None #1s choice
+            self.players[2]["card"] = None
+            threading.Thread(target=Server.card_selection, args=(self.players[1],)).start()
+            threading.Thread(target=Server.card_selection, args=(self.players[2],)).start()
+            #TESTING
+            #Server.card_selection(self.players[1])
+            #Server.card_selection(self.players[2])
+            #card1 = self.players[1]["player"].choose_card(random.randint(0,4))
+            #card2 = self.players[2]["player"].choose_card(random.randint(0,4))
+            #END TESTING
             #player 2 chooses card
-            card2 = None #2s choice
-            card2 = self.players[2]["player"].choose_card(random.randint(0,4))
+            while self.players[1]["card"] is None or self.players[2]["card"] is None:
+                time.sleep(0.01)
+            card2 = self.players[2]["card"]
+            card1 = self.players[1]["card"]
             winner = self.round_win(card1, card2)
-        print("Player {} wins!".format(winner))
+        win_msg = "Player {} wins!".format(winner)
+        print(win_msg)
+        sock1 = self.players[1]["socket"]
+        sock1.send(win_msg.encode())
+        sock2 = self.players[2]["socket"]
+        sock2.send(win_msg.encode())
+        self.listener.close()
+        
 
 
         
@@ -90,10 +135,17 @@ class Server(object):
         print("Player 2's Card: {}".format(card2))
 
         winning_player = Card.battle(card1, card2, self.is_reversed)
+        round_str = card1.config + " vs. " + card2.config + ": " + str(winning_player) + " wins!\n"
+        sock1 = self.players[1]["socket"]
+        sock1.send(round_str.encode())
+        sock2 = self.players[2]["socket"]
+        sock2.send(round_str.encode())
+        print(round_str)
+
         winner = None
         if winning_player == 0:
             print("Stalemate")
-            return None
+            winner = None
         else:
             print("Player {} wins the round!".format(winning_player))
             winning_card = eval("card" + str(winning_player))
@@ -103,13 +155,15 @@ class Server(object):
             for card in self.players[winning_player]["player"].won_cards:
                 print(str(card))
             print("\n\n")
-            return winning_player if is_win else None
+            winner = winning_player if is_win else None
         
 
         self.is_reversed = False
 
         if winning_card.number == 10:
             self.is_reversed = True
+        
+        return winner
 
 
 if __name__ == "__main__":
