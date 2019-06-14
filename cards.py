@@ -98,7 +98,7 @@ Level: {self.number}"""
         Returns the winning player's number.
         """
         winner = does_beat(card1.element, card2.element)
-        if winner == 1:
+        if winner == 0:
             if card1.number == card2.number:
                 return 0
 
