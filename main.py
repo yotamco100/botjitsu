@@ -1,15 +1,47 @@
 # Authors: @CiniMinis and @yotamco100
 # Card-Jitsu Server object.
 
-from player import *
-import socket
 import asyncio
+import socket
 import threading
 import time
 
+import player
 
-def receive_connection(reader, writer):
-    pass
+
+async def run_game():
+    global players
+
+    assert len(players) == 2, 'The number of players is incorrect!'
+
+    p1, p2 = players
+
+    is_reversed = False
+
+    winner = None
+
+    while winner is None:
+        p1.start_turn()
+        p2.start_turn()
+
+        if is_reversed:
+            p1.write('* ')
+            p2.write('* ')
+
+        # Player 1 is choosing a card
+        
+
+async def receive_connection(reader, writer):
+    global players
+
+    player_count = len(players)
+
+    players[player_count + 1] = player.Player(reader, writer)
+
+    player.write(str(number))
+
+    if len(players) == 2:
+        run_game()
 
 
 class Server(object):
@@ -146,7 +178,7 @@ class Server(object):
         print("Player 1's Card: {}".format(card1))
         print("Player 2's Card: {}".format(card2))
 
-        winning_player = cards.Card.battle(card1, card2, self.is_reversed)
+        winning_player = Card.battle(card1, card2, self.is_reversed)
         round_str = card1.config + " vs. " + card2.config + ": " + str(
             winning_player) + " wins!\n"
         sock1 = self.players[1]["socket"]
@@ -180,6 +212,8 @@ class Server(object):
 
 
 if __name__ == "__main__":
+    players = list()
+
     host, port = 'localhost', 14683
     print(f"Server opened with IP {host} and port {port}")
 
