@@ -23,6 +23,9 @@ Where:
 
 For example, a Fire, Purple, 10 card will be written as: `FpA`.
 
+Cards of number 10 are power cards, which means that winning with these cards activates their power.
+In our deck, the power of all three power cards is the "reverse" power which causes cards with lower numbers to beat cards with larger numbers in the following round.
+
 ## The Deck
 Since each card is so easily read, a Deck can be easily arranged using a .dcfg file, where each line is a card in DeckConfig syntax.
 
@@ -40,6 +43,6 @@ For ease of use, each Card and Player have a pretty-printing function they can c
 # The Goal
 In order to win a CardJitsu game, you must be the first player to win 3 rounds with cards, either of all different elements with different colors, or of the same element in different colors.
 
-The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand and each player's "Cards Won" set.
+The goal of each participant is to build the best card-jitsu bot. The given data is exactly what a human player would have: Your hand, if reverse is active and the cards played in each round.
 
 Have fun!
