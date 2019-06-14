@@ -141,7 +141,7 @@ class Server(object):
         print("Player 1's Card: {}".format(card1))
         print("Player 2's Card: {}".format(card2))
 
-        winning_player = Card.battle(card1, card2, self.is_reversed)
+        winning_player = cards.Card.battle(card1, card2, self.is_reversed)
         round_str = card1.config + " vs. " + card2.config + ": " + str(
             winning_player) + " wins!\n"
         sock1 = self.players[1]["socket"]
