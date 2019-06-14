@@ -7,7 +7,7 @@ class Player(object):
     """
     A Player class. Represents a single player in the game.
     """
-    def __init__(self, hand_config, won_cards_config):
+    def __init__(self, hand_config):
         """
         Creates a Player instance. Inits a Deck and deals 4 cards.
 
@@ -15,7 +15,7 @@ class Player(object):
         Returns a Player instance.
         """
         self._hand = [Card.cfg2card(cfg_str) for cfg_str in hand_config]
-        self.won_cards = [Card.cfg2card(cfg_str) for cfg_str in won_cards_config]
+        self._won_cards = []
         self.element_sets = {Element.FIRE: set(), Element.WATER: set(), Element.SNOW: set()}
 
     @property
@@ -40,6 +40,29 @@ class Player(object):
         for index, card in enumerate(self._hand):
             hand_str += card.config + ","
         return hand_str[:-1]
+
+    @property
+    def pretty_won_cards(self):
+        """
+        Pretty Won Cards Property.
+        Returns a pretty-printed version of the Player's won cards.
+        """
+        won_cards_str = ""
+        for index, card in enumerate(self._won_cards):
+            won_cards_str += str(index) + "." + " " + str(card) + "\n"
+        return won_cards_str
+
+    @property
+    def won_cards(self):
+        """
+        won cards Property.
+        Returns the Player's won cards in csv format, where each
+        Card is represented in Config syntax.
+        """
+        won_cards_str = ""
+        for index, card in enumerate(self._won_cards):
+            won_cards_str += card.config + ","
+        return won_cards_str[:-1]
         
     def start_turn(self):
         """
@@ -66,24 +89,11 @@ class Player(object):
         #print(self.pretty_hand)
         return chosen
 
-    def check_win(self, card):
+    def add_to_won_cards(self, card):
         """
-        Checks if the Player won the game, using @CiniMinis set theory skills.
+        Given a card object, add it to won_cards array
 
-        Gets the played Card.
-        Returns if the player won the game in boolean form.
+        Gets: card(Card)
+        Returns: None.
         """
-        self.won_cards.append(card)
-        self.element_sets[card.element].add(card.color)
-        if (len(self.element_sets[card.element]) == 3):
-            return True
-        other1 = self.element_sets[(card.element + 1) % 3]
-        other2 = self.element_sets[(card.element + 2) % 3]
-        
-        sub12 = (other1 - other2) - set(card.color)
-        if len(sub12) > 0 and len((other2 - sub12) - set(card.color)) > 0:
-            return True
-        sub21 = (other2 - other1) - set(card.color)
-        if len(sub21) > 0 and len((other1 - sub21) - set(card.color)) > 0:
-            return True
-        return False
+        self._won_cards.append(card)
