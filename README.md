@@ -40,6 +40,50 @@ Sg8
 
 For ease of use, each Card and Player have a pretty-printing function they can call to display the cards in a more human-readable format: ```Card Element: Fire,   Card Color: Red,     Card Level: 4```
 
+## Read More
+You are more than welcome to read more about cardjitsu play in the club penguin wiki:
+https://clubpenguin.fandom.com/wiki/Card-Jitsu
+
+# Game Interface
+
+## Player Number
+When first connecting to the server, you will be sent either "1" or "2" to indicate whether you register as player 1 or player 2.
+
+## The Hand
+The first message sent to the player is a listing of the 5 cards which make up his hand. If the reverse powerup is active in the game, it will be preceeded by a message of ```* ```.
+For example:
+```FyA,Fr6,WoA,Sg6,Wo5```
+```* ``` followed by ```FyA,WoA,Sg6,Wo5,Fp6```
+Are valid hands.
+
+## Card Selection
+To select a card, send a number between 0 and 4 to the server representing the index of the card which you wish to play.
+Any invalid message, as well as taking too long to reply (exact time will be decided during the match),  will trigger a random card to be selected.
+
+## Round Result
+After both players have selected their cards, the server will return a round result of the following format:
+player_1s_card vs. player_2s_card: no_of_winning_player wins!
+
+## Match Result
+When a player wins, a message is sent to both players saying which player won, with the format of:
+Player no_of_winning_player wins!
+
+## Example
+The following is an exanple of a quick game which shows all aspects of the game, where messages preceeded by > are sent to the server.
+```
+1
+FyA,WoA,Wo5,SgA,Fg8
+>1
+WoA vs. Fr6: 1 wins!
+*FyA,Wo5,SgA,Fg8,Fb3
+>4
+Fb3 vs. FyA: 1 wins!
+FyA,Wo5,SgA,Fg8,Wp4
+>2
+SgA vs. Wo5: 1 wins!
+Player 1 wins!
+```
+
 # The Goal
 
 ## How do I win a CardJitsu round/game?
