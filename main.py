@@ -1,7 +1,7 @@
 # Authors: @CiniMinis and @yotamco100
 # Card-Jitsu Server object.
 
-from Player import *
+from player import *
 import socket
 import asyncio
 import threading
@@ -9,7 +9,7 @@ import time
 
 
 def receive_connection(reader, writer):
-    
+    pass
 
 
 class Server(object):
