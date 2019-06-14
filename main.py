@@ -1,16 +1,18 @@
 # Authors: @CiniMinis and @yotamco100
 # Card-Jitsu Server object.
 
-from Player import  *
+from Player import *
 import socket
 import threading
 import time
+
 
 class Server(object):
     """
     A Card-Jitsu server.
     Used to manage the game between two players.
     """
+
     def __init__(self, port):
         """
         Creates a server.
@@ -23,7 +25,7 @@ class Server(object):
         self.players = {}
         self.is_reversed = False
         print("Card Jitsu server initialized.")
-    
+
     def listen(self, number):
         """
         Listens for a connection and adds it to the player list.
@@ -34,7 +36,7 @@ class Server(object):
         self.listener.listen()
         socket, _ = self.listener.accept()
         socket.send((str(number) + "\n").encode())
-        self.players[number] = {"socket":socket, "player":Player()}
+        self.players[number] = {"socket": socket, "player": Player()}
 
     def connections(self):
         """
@@ -48,7 +50,7 @@ class Server(object):
         print("Waiting for player 2...")
         self.listen(2)
         print("Both players connected. Starting game...")
-    
+
     @staticmethod
     def card_selection(player_dict):
         """
@@ -64,15 +66,15 @@ class Server(object):
         card = None
         try:
             client.send((player.hand + "\n").encode())
-            client.settimeout(60) # 0.3
+            client.settimeout(60)  # 0.3
             selection = client.recv(256)
             client.settimeout(None)
             card = player.choose_card(int(selection.decode()[0]))
         except Exception as e:
             print(e)
-            card = player.choose_card(random.randint(0,4))
+            card = player.choose_card(random.randint(0, 4))
         player_dict["card"] = card
-        
+
     def run(self):
         """
         Runs the game.
@@ -100,12 +102,13 @@ class Server(object):
                 sock2 = self.players[2]["socket"]
                 sock2.send("* ".encode())
 
-           
             #player 1 chooses card
-            self.players[1]["card"] = None #1s choice
+            self.players[1]["card"] = None  #1s choice
             self.players[2]["card"] = None
-            threading.Thread(target=Server.card_selection, args=(self.players[1],)).start()
-            threading.Thread(target=Server.card_selection, args=(self.players[2],)).start()
+            threading.Thread(target=Server.card_selection,
+                             args=(self.players[1], )).start()
+            threading.Thread(target=Server.card_selection,
+                             args=(self.players[2], )).start()
             #TESTING
             #Server.card_selection(self.players[1])
             #Server.card_selection(self.players[2])
@@ -113,7 +116,8 @@ class Server(object):
             #card2 = self.players[2]["player"].choose_card(random.randint(0,4))
             #END TESTING
             #player 2 chooses card
-            while self.players[1]["card"] is None or self.players[2]["card"] is None:
+            while self.players[1]["card"] is None or self.players[2][
+                    "card"] is None:
                 time.sleep(0.01)
             card2 = self.players[2]["card"]
             card1 = self.players[1]["card"]
@@ -125,10 +129,7 @@ class Server(object):
         sock2 = self.players[2]["socket"]
         sock2.send(win_msg.encode())
         self.listener.close()
-        
 
-
-        
     def round_win(self, card1, card2):
         """
         Checks for round winner and adds to won_cards.
@@ -141,7 +142,8 @@ class Server(object):
         print("Player 2's Card: {}".format(card2))
 
         winning_player = Card.battle(card1, card2, self.is_reversed)
-        round_str = card1.config + " vs. " + card2.config + ": " + str(winning_player) + " wins!\n"
+        round_str = card1.config + " vs. " + card2.config + ": " + str(
+            winning_player) + " wins!\n"
         sock1 = self.players[1]["socket"]
         sock1.send(round_str.encode())
         sock2 = self.players[2]["socket"]
@@ -156,19 +158,19 @@ class Server(object):
             print("Player {} wins the round!".format(winning_player))
             winning_card = eval("card" + str(winning_player))
             print("Winning card: " + str(winning_card))
-            is_win = self.players[winning_player]["player"].check_win(winning_card)
+            is_win = self.players[winning_player]["player"].check_win(
+                winning_card)
             print("\nWon cards:")
             for card in self.players[winning_player]["player"].won_cards:
                 print(str(card))
             print("\n\n")
             winner = winning_player if is_win else None
-        
 
         self.is_reversed = False
 
         if winning_card.number == 10:
             self.is_reversed = True
-        
+
         return winner
 
 
