@@ -6,7 +6,7 @@ from Player import *
 
 
 
-class game(object):
+class Game(object):
     """
     This class is an API for the game state.
     Includes constants, functions, and game
