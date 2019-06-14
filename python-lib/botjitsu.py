@@ -29,7 +29,7 @@ class Game(object):
         Gets: won_cards(str[], config strings)
         Returns: remaining_in_deck(str[], config strings)
         """
-        remaining_deck = list(FULL_DECK)
+        remaining_deck = list(Game.FULL_DECK)
         for card in won_cards:
             remaining_deck.remove(card)
         return remaining_deck

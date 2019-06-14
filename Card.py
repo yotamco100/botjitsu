@@ -2,7 +2,6 @@
 # Card-Jitsu classes
 
 import random
-import json
 
 
 class Color(object):
@@ -98,16 +97,47 @@ class Card(object):
             return 2
         else:
             return elem_out
+            
 
-    @staticmethod
-    def cfg2card(cfg_str):
+class Deck(object):
+    """
+    A Deck object. Represents a Deck of Cards, where Cards can be drawn from.
+    """
+    def __init__(self):
         """
-        Given a config string, return a Card object that correlates with that config.
+        Creates a new deck.
+        
+        Opens a deck config file and reads Cards in
+        Config syntax, explained above, then shuffles
+        the Deck.
 
-        Gets: Card Config(str).
-        Returns: Card object(Card).
+        Gets None.
+        Returns a Deck instance.
         """
-        elem = Element.char2elem[cfg_str[0]]
-        color = cfg_str[1]
-        number = int(cfg_str[2], base=16)
-        return Card(elem, color, number)
+        self.deck = []
+        with open("deck.dcfg", "r") as config:
+            for line in config:
+                elem = Element.char2elem[line[0]]
+                color = line[1]
+                number = int(line[2], base=16)
+                self.deck.append(Card(elem, color, number))
+                # print(self.deck[-1])
+        random.shuffle(self.deck)
+
+    def draw(self):
+        """
+        Draw one Card from the Deck.
+
+        Gets None.
+        Returns the top Card and removes it from the Deck.
+        """
+        return self.deck.pop()
+    
+    def deal(self, card_num=4):
+        """
+        Draw card_num Card from the Deck. Used at start of game.
+
+        Gets the number of cards to be drawn.
+        Returns the top card_num Cards and removes them from the Deck.
+        """
+        return [self.draw() for _ in range(card_num)]
