@@ -125,6 +125,6 @@ Level: {self.number}"""
         Returns: Card object(Card).
         """
         elem = Elements(cfg_str[0])
-        color = cfg_str[1]
+        color = Colors(cfg_str[1])
         number = int(cfg_str[2], base=16)
         return Card(elem, color, number)
