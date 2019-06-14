@@ -82,6 +82,8 @@ Any invalid message, as well as taking too long to reply (exact time will be dec
 After both players have selected their cards, the server will return a round result of the following format:
 player_1s_card vs. player_2s_card: no_of_winning_player wins!
 
+Please notice that if a stalemate occurs, the winning player number is 0.
+
 ## Match Result
 When a player wins, a message is sent to both players saying which player won, with the format of:
 Player no_of_winning_player wins!
