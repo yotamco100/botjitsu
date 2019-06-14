@@ -18,9 +18,9 @@ class Player(object):
         self.won_cards = []
         
         self.element_sets = {
-            cards.Element.FIRE: set(),
-            cards.Element.WATER: set(),
-            cards.Element.SNOW: set()
+            cards.Elements.FIRE: set(),
+            cards.Elements.WATER: set(),
+            cards.Elements.SNOW: set()
         }
 
     @property
@@ -52,7 +52,7 @@ class Player(object):
             chosen = self._hand[card_index]
             self._hand.remove(chosen)
         except KeyError:
-            chosen = random.chocie(self._hand)
+            chosen = random.choice(self._hand)
 
         return chosen
 

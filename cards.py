@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from enum import Enum
 from json import load
 
-class Color(Enum):
+class Colors(Enum):
     """
     A Card Color Enum used to distinguish between the different types of colors.
 
@@ -59,15 +59,15 @@ def does_beat(first_element, second_element):
 @dataclass
 class Card():
     """A Card object. Represents a single Card-Jitsu card."""
-        """
-        Creates a new Card.
+    """
+    Creates a new Card.
 
-        Gets an Element (from Enum), Color (from Enum), and number(int).
-        Returns a new Card instance.
-        """
-        element: Elements
-        color: Colors
-        number: int
+    Gets an Element (from Enum), Color (from Enum), and number(int).
+    Returns a new Card instance.
+    """
+    element: Elements
+    color: Colors
+    number: int
 
     @property
     def config(self):
@@ -75,7 +75,8 @@ class Card():
         Config property.
         Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
-        return f"{self.element.name}{self.color.name}{:x}".format(self.number)
+        return f"{self.element.name}{self.color.name}{hex(self.number)[2:].upper()}"
+        # @Meshorer: I believe this should be self.number instead of number, correct if wrong.
 
     def __str__(self):
         """
@@ -105,7 +106,7 @@ Level: {self.number}"""
             return 2
 
         else:
-            return elem_out
+            return winner  # @Meshorer: was elem_out
             
 
 class Deck(object):
@@ -126,7 +127,7 @@ class Deck(object):
         self.deck = []
 
         with open('deck.json') as deck_file:
-            decks = json.load(deck_file)
+            decks = load(deck_file)
 
             for line in decks['decks']:
                 element, color, number = line
