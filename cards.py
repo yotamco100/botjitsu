@@ -76,6 +76,15 @@ class Card():
     number: int
 
     @property
+    def compressed(self):
+        """
+        Using the old config syntax
+        Returns the card's old config
+        """
+        return f"{self.element.value[0]}{self.color.value[0].lower()}{hex(self.number)}"
+
+
+    @property
     def config(self):
         """
         Config property.

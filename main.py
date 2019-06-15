@@ -121,7 +121,7 @@ async def receive_connection(reader, writer):
 
 
 if __name__ == "__main__":
-    host, port = 'localhost', 14683
+    host, port = '0.0.0.0', 14683
     print(f"Server opened with IP {host} and port {port}")
 
     loop = asyncio.get_event_loop()
