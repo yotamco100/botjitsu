@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # Authors: @CiniMinis, @yotamco100 and @MeshyIce
 # Card-Jitsu classes and enums
 
@@ -5,6 +6,7 @@ import random
 from dataclasses import dataclass
 from enum import Enum
 from json import load
+
 
 class Colors(Enum):
     """
@@ -24,21 +26,21 @@ class Colors(Enum):
         >>> fail = Colors('x')
         ValueError: 'x' is not a valid Colors
     """
-    RED = 'r'
-    BLUE = 'b'
-    GREEN = 'g'
-    YELLOW = 'y'
-    ORANGE = 'o'
-    PURPLE = 'p'
+    RED = 'Red'
+    BLUE = 'Blue'
+    GREEN = 'Green'
+    YELLOW = 'Yellow'
+    ORANGE = 'Orange'
+    PURPLE = 'Purple'
 
 
 class Elements(Enum):
     """
     A Card Element Enum used to distinguish between the different types of elements.
     """
-    FIRE = 'F'
-    WATER = 'W'
-    SNOW = 'S'
+    FIRE = 'Fire'
+    WATER = 'Water'
+    SNOW = 'Snow'
 
 
 type_effectiveness = {
@@ -49,12 +51,14 @@ type_effectiveness = {
 
 
 def does_beat(first_element, second_element):
+    # If the first element wins
     if type_effectiveness[first_element] == second_element:
-        return 1 # The first element wins
+        return 1
+    # If the second element wins
     elif type_effectiveness[second_element] == first_element:
-        return 2 # The second element wins
-    
-    # If both the elements are the same
+        return 2
+
+    # If both elements are the same
     return 0
 
 
@@ -77,15 +81,15 @@ class Card():
         Config property.
         Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
-        return f"{self.element.name}{self.color.name}{hex(self.number)[2:].upper()}"
+        return f"[{self.element.value}] [{self.color.value}] [{self.number}]"
 
     def __str__(self):
         """
         Returns a pretty-print ready string of the card.
         """
-        return f"""Element: {self.element.name}
-Color: {self.color.name}
-Level: {self.number}"""
+        return f"""=== Element: {self.element.name}
+=== Color: {self.color.name}
+=== Level: {self.number}"""
 
     @staticmethod
     def battle(card1, card2, is_reversed):
@@ -105,10 +109,11 @@ Level: {self.number}"""
             return 2
         else:
             return winner
-            
 
-class Deck(object):
+
+class Deck():
     """Represents a deck of cards, where cards can be drawn from."""
+
     def __init__(self):
         """
         Creates a new deck.
@@ -122,18 +127,18 @@ class Deck(object):
         with open('deck.json') as deck_file:
             decks = load(deck_file)
 
-            for line in decks['decks']:
-                element, color, number = line
-                element = Elements(element)
-                color = Colors(int(color))
+            for card in decks['cards']:
+                element = Elements(card['element'])
+                color = Colors(card['color'])
+                number = int(card['number'])
                 self.deck.append(Card(element, color, number))
-        
+
         random.shuffle(self.deck)
 
     def draw(self):
         """Draw one Card from the Deck."""
         return self.deck.pop()
-    
+
     def deal(self, card_num=4):
         """Draw card_num Card from the Deck. Used at start of game."""
         return [self.draw() for _ in range(card_num)]
