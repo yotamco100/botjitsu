@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from json import load
 
+
 class Colors(Enum):
     """
     A Card Color Enum used to distinguish between the different types of colors.
@@ -50,12 +51,14 @@ type_effectiveness = {
 
 
 def does_beat(first_element, second_element):
+    # If the first element wins
     if type_effectiveness[first_element] == second_element:
-        return 1 # The first element wins
+        return 1
+    # If the second element wins
     elif type_effectiveness[second_element] == first_element:
-        return 2 # The second element wins
-    
-    # If both the elements are the same
+        return 2
+
+    # If both elements are the same
     return 0
 
 
@@ -106,10 +109,11 @@ Level: {self.number}"""
             return 2
         else:
             return winner
-            
+
 
 class Deck(object):
     """Represents a deck of cards, where cards can be drawn from."""
+
     def __init__(self):
         """
         Creates a new deck.
@@ -123,18 +127,18 @@ class Deck(object):
         with open('deck.json') as deck_file:
             decks = load(deck_file)
 
-            for line in decks['decks']:
-                element, color, number = line
-                element = Elements(element)
-                color = Colors(int(color))
+            for card in decks['cards']:
+                element = Elements(card['element'])
+                color = Colors(card['color'])
+                number = int(card['number'])
                 self.deck.append(Card(element, color, number))
-        
+
         random.shuffle(self.deck)
 
     def draw(self):
         """Draw one Card from the Deck."""
         return self.deck.pop()
-    
+
     def deal(self, card_num=4):
         """Draw card_num Card from the Deck. Used at start of game."""
         return [self.draw() for _ in range(card_num)]
