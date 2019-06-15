@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # Authors: @CiniMinis, @yotamco100 and @MeshyIce
 # Card-Jitsu classes and enums
 
