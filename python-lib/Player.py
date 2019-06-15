@@ -1,10 +1,15 @@
-# Authors: @CiniMinis and @yotamco100
-# A Player object for Card-Jitsu.
+#!/usr/bin/env python3.7
+# Authors: @CiniMinis, @yotamco100 and @MeshyIce
+# A Player class for Card-Jitsu.
+
+import asyncio
+import itertools
+import random
 
 import cards
 
 
-class Player(object):
+class Player():
     """A Player class. Represents a single player in the game."""
 
     def __init__(self, hand_config):
@@ -20,31 +25,26 @@ class Player(object):
             cards.Elements.SNOW: set()
         }
 
-    @property
     def pretty_hand(self):
-        """
-        Pretty Hand Property.
-        Returns a pretty-printed version of the Player's hand.
-        """
+        """Returns a pretty-printed version of the Player's hand."""
         return '\n'.join(f"{index}. {card}"
                          for index, card in enumerate(self._hand))
 
-    @property
-    def hand(self):
-        """
-        Hand Property.
-        Returns the Player's hand in csv format, where each
-        Card is represented in Config syntax.
-        """
-        return ','.join(card.config for card in self._hand)
-
+    def get_hand_string(self):
+            """
+            Returns the Player's hand in csv format, where each
+            card is represented in Config syntax.
+            """
+            return ','.join(card.config for card in self._hand)
+    
     def choose_card(self, card_index):
         """Plays a card from the Player's hand."""
         try:
             chosen = self._hand[card_index]
-            self._hand.remove(chosen)
         except KeyError:
             chosen = cards.random.choice(self._hand)
+        
+        self._hand.remove(chosen)
 
         return chosen
 
