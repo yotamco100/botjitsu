@@ -7,29 +7,30 @@ import socket
 import threading
 import time
 
-import player
 import cards
-
+import player
 
 # Global variables used in most functions
 players = dict()
 is_reversed = False
 
 
-async def get_card_from_players(player):
+async def get_card_from_players(p):
     """Asks the player for a card and updates player.current_card"""
-    player.write(player.get_hand_string())
-    selection = player.read()
-    player.choose_card(int(selection))
+    p.write(p.get_hand_string())
+    selection = p.read()
+    p.choose_card(int(selection))
 
 
-def check_winner(p1, p2):
+async def check_winner(p1, p2):
     """Checks if there is a winner"""
+    global is_reversed
+
     p1_card, p2_card = p1.current_card, p2.current_card
     print("Player 1's card:\n", p1_card)
     print("Player 2's card:\n", p2_card)
 
-    winner = cards.Card.battle(p1_card, p2_card)
+    winner = cards.Card.battle(p1_card, p2_card, is_reversed)
     battle_outcome = f"{p1_card.config} vs. {p2_card.config}: winner={winner}\n"
 
     await p1.write(battle_outcome)
@@ -43,24 +44,35 @@ def check_winner(p1, p2):
     # If there is no winner
     if winner == 0:
         print('Stalemate!')
-    else:
-        print(f"Player {winner} wins the round!")
-        # If the player that won the round also won the game
-        is_win = players[winner].check_win()
-        if is_win:
-            return is_win
-        
-        print()
-        print('Won cards:')
+        return
+
+    print(f"Player {winner} wins the round!")
+    # If the player that won the round also won the game
+
+    print()
+    print('Won cards:')
+    for card in players[winner].won_cards:
+        print(card)
+
+    players[winner].add_winning_card()
+    is_win = players[winner].check_win()
+    # Returns None if there is no winner
+    if is_win:
+        return is_win
 
 
 async def run_game():
-    global players
+    """The main game loop, controls the turns"""
+    global players, is_reversed
     assert len(players) == 2, 'The number of players is incorrect!'
-    p1, p2 = players
+
+    p1, p2 = players[1], players[2]
+
+    await p1.write_line('Game Started!')
+    await p2.write_line('Game Started!')
 
     winner = None
-
+    # While the game runs
     while winner is None:
         p1.start_turn()
         p2.start_turn()
@@ -69,11 +81,19 @@ async def run_game():
             p1.write('* ')
             p2.write('* ')
 
-        # Player 1 is choosing a card
-        async p1.update_current_card()
-        async p2.update_current_card()
+        # Draw cards for each player
+        await p1.draw_card()
+        await p2.draw_card()
 
-        check_winner(p1, p2)
+        winner = await check_winner(p1, p2)
+        winner_notification = f"Player {winner} wins!"
+        await p1.write_line(winner_notification)
+        await p2.write_line(winner_notification)
+
+        is_reversed = False
+        # Reverse is activated if a card with a value of 10 and over is played
+        if p1.current_card.number >= 10 or p2.current_card.number >= 10:
+            is_reversed = True
 
 
 async def receive_connection(reader, writer):
@@ -81,12 +101,16 @@ async def receive_connection(reader, writer):
 
     player_count = len(players)
 
-    players[player_count + 1] = player.Player(reader, writer)
+    new_player = player.Player(reader, writer)
+    players[player_count + 1] = new_player
 
-    player.write(str(number))
+    # Notify the player what number he is
+    start_message = f"You are player #{player_count + 1}!"
+    await new_player.write_line(start_message)
 
+    # If there are 2 players connecting, start the game
     if len(players) == 2:
-        run_game()
+        await run_game()
 
 
 if __name__ == "__main__":
@@ -98,3 +122,14 @@ if __name__ == "__main__":
                                      host=host,
                                      port=port,
                                      loop=loop)
+    server = loop.run_until_complete(coroutine)
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+
+    # Close the server
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()

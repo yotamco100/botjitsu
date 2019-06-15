@@ -1,34 +1,154 @@
 {
-    "decks": [
-        "SgA",
-        "FyA",
-        "WoA",
-        "Fb3",
-        "Fp6",
-        "Fy2",
-        "So3",
-        "Sr2",
-        "Sy7",
-        "Wb5",
-        "Wg2",
-        "Wp4",
-        "Fg8",
-        "Sr6",
-        "Wg3",
-        "Wb8",
-        "So3",
-        "Fr4",
-        "Fo5",
-        "Sg8",
-        "Wo5",
-        "Fb3",
-        "Fo5",
-        "Fr6",
-        "Sp4",
-        "Sg5",
-        "Sg6",
-        "Wy4",
-        "Wb6",
-        "Wr7"
+    "cards": [
+        {
+            "element": "Fire",
+            "color": "Blue",
+            "number": 3
+        },
+        {
+            "element": "Fire",
+            "color": "Blue",
+            "number": 3
+        },
+        {
+            "element": "Fire",
+            "color": "Green",
+            "number": 8
+        },
+        {
+            "element": "Fire",
+            "color": "Orange",
+            "number": 5
+        },
+        {
+            "element": "Fire",
+            "color": "Orange",
+            "number": 5
+        },
+        {
+            "element": "Fire",
+            "color": "Purple",
+            "number": 6
+        },
+        {
+            "element": "Fire",
+            "color": "Red",
+            "number": 4
+        },
+        {
+            "element": "Fire",
+            "color": "Red",
+            "number": 6
+        },
+        {
+            "element": "Fire",
+            "color": "Yellow",
+            "number": 2
+        },
+        {
+            "element": "Fire",
+            "color": "Yellow",
+            "number": 10
+        },
+        {
+            "element": "Snow",
+            "color": "Green",
+            "number": 5
+        },
+        {
+            "element": "Snow",
+            "color": "Green",
+            "number": 6
+        },
+        {
+            "element": "Snow",
+            "color": "Green",
+            "number": 8
+        },
+        {
+            "element": "Snow",
+            "color": "Green",
+            "number": 10
+        },
+        {
+            "element": "Snow",
+            "color": "Orange",
+            "number": 3
+        },
+        {
+            "element": "Snow",
+            "color": "Orange",
+            "number": 3
+        },
+        {
+            "element": "Snow",
+            "color": "Purple",
+            "number": 4
+        },
+        {
+            "element": "Snow",
+            "color": "Red",
+            "number": 2
+        },
+        {
+            "element": "Snow",
+            "color": "Red",
+            "number": 6
+        },
+        {
+            "element": "Snow",
+            "color": "Yellow",
+            "number": 7
+        },
+        {
+            "element": "Water",
+            "color": "Blue",
+            "number": 5
+        },
+        {
+            "element": "Water",
+            "color": "Blue",
+            "number": 6
+        },
+        {
+            "element": "Water",
+            "color": "Blue",
+            "number": 8
+        },
+        {
+            "element": "Water",
+            "color": "Green",
+            "number": 2
+        },
+        {
+            "element": "Water",
+            "color": "Green",
+            "number": 3
+        },
+        {
+            "element": "Water",
+            "color": "Orange",
+            "number": 5
+        },
+        {
+            "element": "Water",
+            "color": "Orange",
+            "number": 10
+        },
+        {
+            "element": "Water",
+            "color": "Purple",
+            "number": 4
+        },
+        {
+            "element": "Water",
+            "color": "Red",
+            "number": 7
+        },
+        {
+            "element": "Water",
+            "color": "Yellow",
+            "number": 4
+        }
     ]
 }
