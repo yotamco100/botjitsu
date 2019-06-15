@@ -27,7 +27,7 @@ class Player():
 
     def pretty_hand(self):
         """Returns a pretty-printed version of the Player's hand."""
-        return '\n'.join(f"{index}. {card}"
+        return '\n'.join(f"{index}.\n{card}\n"
                          for index, card in enumerate(self._hand))
 
     def get_hand_string(self):
