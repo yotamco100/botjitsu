@@ -27,8 +27,8 @@ async def check_winner(p1, p2):
     global is_reversed
 
     p1_card, p2_card = p1.current_card, p2.current_card
-    print("Player 1's card:\n", p1_card)
-    print("Player 2's card:\n", p2_card)
+    print("Player 1's card:", p1_card, sep='\n')
+    print("Player 2's card:", p2_card, sep='\n')
 
     winner = cards.Card.battle(p1_card, p2_card, is_reversed)
     battle_outcome = f"{p1_card.config} vs. {p2_card.config}: winner={winner}\n"
@@ -57,8 +57,8 @@ async def check_winner(p1, p2):
     players[winner].add_winning_card()
     is_win = players[winner].check_win()
     # Returns None if there is no winner
-    if is_win:
-        return is_win
+    
+    return winner, is_win
 
 
 async def run_game():
@@ -81,14 +81,21 @@ async def run_game():
             p1.write('* ')
             p2.write('* ')
 
+        await p1.write_line(p1.pretty_hand())
+        await p2.write_line(p2.pretty_hand())
+
         # Draw cards for each player
         await p1.draw_card()
         await p2.draw_card()
 
-        winner = await check_winner(p1, p2)
+        winner, is_win = await check_winner(p1, p2)
         winner_notification = f"Player {winner} wins!"
         await p1.write_line(winner_notification)
         await p2.write_line(winner_notification)
+
+        # "winner" won the game
+        if is_win:
+            break
 
         is_reversed = False
         # Reverse is activated if a card with a value of 10 and over is played

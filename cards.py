@@ -26,21 +26,21 @@ class Colors(Enum):
         >>> fail = Colors('x')
         ValueError: 'x' is not a valid Colors
     """
-    RED = 'r'
-    BLUE = 'b'
-    GREEN = 'g'
-    YELLOW = 'y'
-    ORANGE = 'o'
-    PURPLE = 'p'
+    RED = 'Red'
+    BLUE = 'Blue'
+    GREEN = 'Green'
+    YELLOW = 'Yellow'
+    ORANGE = 'Orange'
+    PURPLE = 'Purple'
 
 
 class Elements(Enum):
     """
     A Card Element Enum used to distinguish between the different types of elements.
     """
-    FIRE = 'F'
-    WATER = 'W'
-    SNOW = 'S'
+    FIRE = 'Fire'
+    WATER = 'Water'
+    SNOW = 'Snow'
 
 
 type_effectiveness = {
@@ -81,15 +81,15 @@ class Card():
         Config property.
         Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
-        return f"{self.element.name}{self.color.name}{hex(self.number)[2:].upper()}"
+        return f"[{self.element.value}] [{self.color.value}] [{self.number}]"
 
     def __str__(self):
         """
         Returns a pretty-print ready string of the card.
         """
-        return f"""Element: {self.element.name}
-Color: {self.color.name}
-Level: {self.number}"""
+        return f"""=== Element: {self.element.name}
+=== Color: {self.color.name}
+=== Level: {self.number}"""
 
     @staticmethod
     def battle(card1, card2, is_reversed):
