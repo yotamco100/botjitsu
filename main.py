@@ -1,182 +1,92 @@
-# Authors: @CiniMinis and @yotamco100
+#!/usr/bin/env python3.7
+# Authors: @CiniMinis, @yotamco100 and @MeshyIce
 # Card-Jitsu Server object.
 
-from player import *
-import socket
 import asyncio
+import socket
 import threading
 import time
 
+import player
+import cards
 
-def receive_connection(reader, writer):
-    pass
+
+# Global variables used in most functions
+players = dict()
+is_reversed = False
 
 
-class Server(object):
-    """
-    A Card-Jitsu server.
-    Used to manage the game between two players.
-    """
+async def get_card_from_players(player):
+    """Asks the player for a card and updates player.current_card"""
+    player.write(player.get_hand_string())
+    selection = player.read()
+    player.choose_card(int(selection))
 
-    def __init__(self, port):
-        """
-        Creates a server.
 
-        Gets a port number.
-        Returns a Server instance.
-        """
-        self.listener = socket.socket()
-        self.listener.bind(("0.0.0.0", port))
-        self.players = {}
-        self.is_reversed = False
-        print("Card Jitsu server initialized.")
+def check_winner(p1, p2):
+    """Checks if there is a winner"""
+    p1_card, p2_card = p1.current_card, p2.current_card
+    print("Player 1's card:\n", p1_card)
+    print("Player 2's card:\n", p2_card)
 
-    def listen(self, number):
-        """
-        Listens for a connection and adds it to the player list.
+    winner = cards.Card.battle(p1_card, p2_card)
+    battle_outcome = f"{p1_card.config} vs. {p2_card.config}: winner={winner}\n"
 
-        Gets a player number to add.
-        Returns None.
-        """
-        self.listener.listen()
-        socket, _ = self.listener.accept()
-        socket.send((str(number) + "\n").encode())
-        self.players[number] = {"socket": socket, "player": Player()}
+    await p1.write(battle_outcome)
+    await p2.write(battle_outcome)
+    print(battle_outcome)
 
-    def receive_connection(self):
-        """
-        Listens for connections until both players connect.
+    # After playing the card, insert the card to the bottom of the deck
+    p1.deck.play_card(p1_card)
+    p2.deck.play_card(p2_card)
 
-        Gets None.
-        Returns None.
-        """
-        print("Waiting for player 1...")
-        self.listen(1)
-        print("Waiting for player 2...")
-        self.listen(2)
-        print("Both players connected. Starting game...")
+    # If there is no winner
+    if winner == 0:
+        print('Stalemate!')
+    else:
+        print(f"Player {winner} wins the round!")
+        # If the player that won the round also won the game
+        is_win = players[winner].check_win()
+        if is_win:
+            return is_win
+        
+        print()
+        print('Won cards:')
 
-    @staticmethod
-    def card_selection(player_dict):
-        """
-        Queries the player for his selected card.
-        Sends the player's hand and manages the card selection
 
-        Gets client socket and the player object.
-        Returns the selected card.
-        Prints None.
-        """
-        player = player_dict["player"]
-        client = player_dict["socket"]
-        card = None
-        try:
-            client.send((player.hand + "\n").encode())
-            client.settimeout(60)  # 0.3
-            selection = client.recv(256)
-            client.settimeout(None)
-            card = player.choose_card(int(selection.decode()[0]))
-        except Exception as e:
-            print(e)
-            card = player.choose_card(random.randint(0, 4))
-        player_dict["card"] = card
+async def run_game():
+    global players
+    assert len(players) == 2, 'The number of players is incorrect!'
+    p1, p2 = players
 
-    def run(self):
-        """
-        Runs the game.
-        Connects the players and manages the game until a winner is chosen.
+    winner = None
 
-        Gets None.
-        Returns None.
-        Prints winner.
-        """
-        self.receive_connection()
-        # TESTING
-        #self.players[1] = {"socket":None, "player":Player()}
-        #self.players[2] = {"socket":None, "player":Player()}
-        # END TESTING
-        #Players are now connected and the show is on the road
-        winner = None
-        while winner is None:
-            self.players[1]["player"].start_turn()
-            self.players[2]["player"].start_turn()
+    while winner is None:
+        p1.start_turn()
+        p2.start_turn()
 
-            if self.is_reversed:
-                print("Watch out! Reverse is active!")
-                sock1 = self.players[1]["socket"]
-                sock1.send("* ".encode())
-                sock2 = self.players[2]["socket"]
-                sock2.send("* ".encode())
+        if is_reversed:
+            p1.write('* ')
+            p2.write('* ')
 
-            #player 1 chooses card
-            self.players[1]["card"] = None  #1s choice
-            self.players[2]["card"] = None
-            threading.Thread(target=Server.card_selection,
-                             args=(self.players[1], )).start()
-            threading.Thread(target=Server.card_selection,
-                             args=(self.players[2], )).start()
-            #TESTING
-            #Server.card_selection(self.players[1])
-            #Server.card_selection(self.players[2])
-            #card1 = self.players[1]["player"].choose_card(random.randint(0,4))
-            #card2 = self.players[2]["player"].choose_card(random.randint(0,4))
-            #END TESTING
-            #player 2 chooses card
-            while self.players[1]["card"] is None or self.players[2][
-                    "card"] is None:
-                time.sleep(0.01)
-            card2 = self.players[2]["card"]
-            card1 = self.players[1]["card"]
-            winner = self.round_win(card1, card2)
-        win_msg = "Player {} wins!".format(winner)
-        print(win_msg)
-        sock1 = self.players[1]["socket"]
-        sock1.send(win_msg.encode())
-        sock2 = self.players[2]["socket"]
-        sock2.send(win_msg.encode())
-        self.listener.close()
+        # Player 1 is choosing a card
+        async p1.update_current_card()
+        async p2.update_current_card()
 
-    def round_win(self, card1, card2):
-        """
-        Checks for round winner and adds to won_cards.
-        Also sets the is_reversed global game state parameter.
+        check_winner(p1, p2)
 
-        Gets the two Chosen cards for the round.
-        Returns the winning player's number, or None if stalemate.
-        """
-        print("Player 1's Card: {}".format(card1))
-        print("Player 2's Card: {}".format(card2))
 
-        winning_player = cards.Card.battle(card1, card2, self.is_reversed)
-        round_str = card1.config + " vs. " + card2.config + ": " + str(
-            winning_player) + " wins!\n"
-        sock1 = self.players[1]["socket"]
-        sock1.send(round_str.encode())
-        sock2 = self.players[2]["socket"]
-        sock2.send(round_str.encode())
-        print(round_str)
+async def receive_connection(reader, writer):
+    global players
 
-        winner = None
-        if winning_player == 0:
-            print("Stalemate")
-            winner = None
-        else:
-            print("Player {} wins the round!".format(winning_player))
-            winning_card = eval("card" + str(winning_player))
-            print("Winning card: " + str(winning_card))
-            is_win = self.players[winning_player]["player"].check_win(
-                winning_card)
-            print("\nWon cards:")
-            for card in self.players[winning_player]["player"].won_cards:
-                print(str(card))
-            print("\n\n")
-            winner = winning_player if is_win else None
+    player_count = len(players)
 
-        self.is_reversed = False
+    players[player_count + 1] = player.Player(reader, writer)
 
-        if winning_card.number == 10:
-            self.is_reversed = True
+    player.write(str(number))
 
-        return winner
+    if len(players) == 2:
+        run_game()
 
 
 if __name__ == "__main__":

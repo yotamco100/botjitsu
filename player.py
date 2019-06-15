@@ -1,83 +1,90 @@
-# Authors: @CiniMinis and @yotamco100
-# A Player object for Card-Jitsu.
+#!/usr/bin/env python3.7
+# Authors: @CiniMinis, @yotamco100 and @MeshyIce
+# A Player class for Card-Jitsu.
 
 import random
 
 import cards
 
 
-class Player(object):
+class Player():
     """A Player class. Represents a single player in the game."""
 
-    def __init__(self):
+    def __init__(self, reader, writer):
         """
-        Creates a Player instance. Initializes a deck and deals 4 cards.
+        Creates a Player instance.
+        Initializes a deck and deals 4 cards.
         """
         self.deck = cards.Deck()
         self._hand = self.deck.deal()
         self.won_cards = []
-        
+        self.current_card = None
+
+        self.reader = reader
+        self.writer = writer
+
         self.element_sets = {
             cards.Elements.FIRE: set(),
             cards.Elements.WATER: set(),
             cards.Elements.SNOW: set()
         }
 
-    @property
+    def write(self, message):
+        """Used to send data to the player"""
+        self.writer.write(message.encode())
+        await self.writer.drain()
+    
+    def read(self, max_length=256):
+        """Used to receive data from the player"""
+        message = await self.reader.read(100)
+        message = message.decode()
+        
+        return message
+
     def pretty_hand(self):
-        """
-        Pretty Hand Property.
-        Returns a pretty-printed version of the Player's hand.
-        """
+        """Returns a pretty-printed version of the Player's hand."""
         return '\n'.join(f"{index}. {card}"
                          for index, card in enumerate(self._hand))
 
-    @property
-    def hand(self):
+    def get_hand_string(self):
         """
-        Hand Property.
         Returns the Player's hand in csv format, where each
-        Card is represented in Config syntax.
+        card is represented in Config syntax.
         """
         return ','.join(card.config for card in self._hand)
 
     def start_turn(self):
         """Starts the turn by drawing a card."""
         self._hand.append(self.deck.draw())
-        #print(self.pretty_hand)
 
-    def choose_card(self, card_index):
+    def draw_card(self, card_index):
         """Plays a card from the Player's hand."""
         try:
-            chosen = self._hand[card_index]
-            self._hand.remove(chosen)
+            chosen_card = self._hand[card_index]
+        # If the index does not exist, choose a random card instead
         except KeyError:
-            chosen = random.choice(self._hand)
-
-        return chosen
+            chosen_card = random.choice(self._hand)
+        
+        self._hand.remove(chosen_card)
+        self.current_card = chosen_card
 
     def check_win(self, card):
-        """
-        Checks if the Player won the game, using @CiniMinis set theory skills.
-
-        Gets the played Card.
-        Returns if the player won the game in boolean form.
-        """
+        """Checks if the current player won the game."""
         self.won_cards.append(card)
         self.element_sets[card.element].add(card.color)
        
-        if len(self.element_sets[card.element]) == 3:
-            return True
-
-        other1 = self.element_sets[(card.element + 1) % 3]
-        other2 = self.element_sets[(card.element + 2) % 3]
-
-        sub12 = (other1 - other2) - set(card.color)
-        if len(sub12) > 0 and len((other2 - sub12) - set(card.color)) > 0:
+        # If any of the elements has 3 wins
+        if any(len(element_set) == 3 for element_set in self.element_sets):
             return True
         
-        sub21 = (other2 - other1) - set(card.color)
-        if len(sub21) > 0 and len((other1 - sub21) - set(card.color)) > 0:
+        all_sets_not_empty = all(len(element_set) > 0
+                                 for element_set in self.element_sets)
+        all_elements_set = set(card.color for element_set in self.element_sets
+                               for card in element_set)
+        
+        # If all of the elements have at least 1 win
+        if all_sets_not_empty and len(all_elements_set) >= 3:
             return True
         
+        # If there is no win
         return False
