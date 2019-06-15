@@ -1,4 +1,4 @@
-# Authors: @CiniMinis and @yotamco100
+# Authors: @CiniMinis, @yotamco100 and @MeshyIce
 # Card-Jitsu Server object.
 
 import asyncio
@@ -7,16 +7,56 @@ import threading
 import time
 
 import player
+import cards
+
+
+# Global variables used in most functions
+players = dict()
+is_reversed = False
+
+
+async def get_card_from_players(player):
+    """Asks the player for a card and updates player.current_card"""
+    player.write(player.get_hand_string())
+    selection = player.read()
+    player.choose_card(int(selection))
+
+
+def check_winner(p1, p2):
+    """Checks if there is a winner"""
+    p1_card, p2_card = p1.current_card, p2.current_card
+    print("Player 1's card:\n", p1_card)
+    print("Player 2's card:\n", p2_card)
+
+    winner = cards.Card.battle(p1_card, p2_card)
+    battle_outcome = f"{p1_card.config} vs. {p2_card.config}: winner={winner}\n"
+
+    await p1.write(battle_outcome)
+    await p2.write(battle_outcome)
+    print(battle_outcome)
+
+    # After playing the card, insert the card to the bottom of the deck
+    p1.deck.play_card(p1_card)
+    p2.deck.play_card(p2_card)
+
+    # If there is no winner
+    if winner == 0:
+        print('Stalemate!')
+    else:
+        print(f"Player {winner} wins the round!")
+        # If the player that won the round also won the game
+        is_win = players[winner].check_win()
+        if is_win:
+            return is_win
+        
+        print()
+        print('Won cards:')
 
 
 async def run_game():
     global players
-
     assert len(players) == 2, 'The number of players is incorrect!'
-
     p1, p2 = players
-
-    is_reversed = False
 
     winner = None
 
@@ -29,7 +69,11 @@ async def run_game():
             p2.write('* ')
 
         # Player 1 is choosing a card
-        
+        async p1.update_current_card()
+        async p2.update_current_card()
+
+        check_winner(p1, p2)
+
 
 async def receive_connection(reader, writer):
     global players
@@ -44,7 +88,7 @@ async def receive_connection(reader, writer):
         run_game()
 
 
-class Server(object):
+class Server():
     """
     A Card-Jitsu server.
     Used to manage the game between two players.
@@ -126,7 +170,7 @@ class Server(object):
         #self.players[1] = {"socket":None, "player":Player()}
         #self.players[2] = {"socket":None, "player":Player()}
         # END TESTING
-        #Players are now connected and the show is on the road
+        # Players are now connected and the show is on the road
         winner = None
         while winner is None:
             self.players[1]["player"].start_turn()
@@ -139,20 +183,20 @@ class Server(object):
                 sock2 = self.players[2]["socket"]
                 sock2.send("* ".encode())
 
-            #player 1 chooses card
-            self.players[1]["card"] = None  #1s choice
+            # player 1 chooses card
+            self.players[1]["card"] = None  # 1s choice
             self.players[2]["card"] = None
             threading.Thread(target=Server.card_selection,
                              args=(self.players[1], )).start()
             threading.Thread(target=Server.card_selection,
                              args=(self.players[2], )).start()
-            #TESTING
-            #Server.card_selection(self.players[1])
-            #Server.card_selection(self.players[2])
+            # TESTING
+            # Server.card_selection(self.players[1])
+            # Server.card_selection(self.players[2])
             #card1 = self.players[1]["player"].choose_card(random.randint(0,4))
             #card2 = self.players[2]["player"].choose_card(random.randint(0,4))
-            #END TESTING
-            #player 2 chooses card
+            # END TESTING
+            # player 2 chooses card
             while self.players[1]["card"] is None or self.players[2][
                     "card"] is None:
                 time.sleep(0.01)
@@ -212,8 +256,6 @@ class Server(object):
 
 
 if __name__ == "__main__":
-    players = list()
-
     host, port = 'localhost', 14683
     print(f"Server opened with IP {host} and port {port}")
 

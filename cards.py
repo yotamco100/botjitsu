@@ -1,5 +1,5 @@
-# Authors: @CiniMinis and @yotamco100
-# Card-Jitsu classes
+# Authors: @CiniMinis, @yotamco100 and @MeshyIce
+# Card-Jitsu classes and enums
 
 import random
 from dataclasses import dataclass
@@ -78,12 +78,10 @@ class Card():
         Returns the card's config in syntax: [element char][color char][number char, in hex].
         """
         return f"{self.element.name}{self.color.name}{hex(self.number)[2:].upper()}"
-        # @Meshorer: I believe this should be self.number instead of number, correct if wrong.
 
     def __str__(self):
         """
-        Card toString.
-        Returns a pretty-printed string of the Card object.
+        Returns a pretty-print ready string of the card.
         """
         return f"""Element: {self.element.name}
 Color: {self.color.name}
@@ -91,40 +89,33 @@ Level: {self.number}"""
 
     @staticmethod
     def battle(card1, card2, is_reversed):
-        """
-        Determines the winner of two Card objects.
-
-        Gets two Cards, is_reversed boolean (game state where lower number wins).
-        Returns the winning player's number.
-        """
+        """Determines the winner of the two cards."""
         winner = does_beat(card1.element, card2.element)
+
         if winner == 0:
             if card1.number == card2.number:
                 return 0
 
+            # If first card is bigger than the second
+            # (or the opposite if is_reverse is True)
             elif (card1.number > card2.number) ^ is_reversed:
                 return 1
 
+            # The second player has one the round
             return 2
-
         else:
-            return winner  # @Meshorer: was elem_out
+            return winner
             
 
 class Deck(object):
-    """
-    A Deck object. Represents a Deck of Cards, where Cards can be drawn from.
-    """
+    """Represents a deck of cards, where cards can be drawn from."""
     def __init__(self):
         """
         Creates a new deck.
         
-        Opens a deck config file and reads Cards in
-        Config syntax, explained above, then shuffles
-        the Deck.
-
-        Gets None.
-        Returns a Deck instance.
+        Opens a deck config file and reads the cards
+        in the config syntax explained above,
+        then shuffles the Deck.
         """
         self.deck = []
 
@@ -146,3 +137,7 @@ class Deck(object):
     def deal(self, card_num=4):
         """Draw card_num Card from the Deck. Used at start of game."""
         return [self.draw() for _ in range(card_num)]
+
+    def play_card(self, card):
+        """Plays a certain card and inserts it to the bottom of the deck"""
+        self.deck.insert(0, card)
