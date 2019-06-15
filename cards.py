@@ -111,7 +111,7 @@ Level: {self.number}"""
             return winner
 
 
-class Deck(object):
+class Deck():
     """Represents a deck of cards, where cards can be drawn from."""
 
     def __init__(self):
