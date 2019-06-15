@@ -124,12 +124,12 @@ if __name__ == "__main__":
                                      loop=loop)
     server = loop.run_until_complete(coroutine)
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
 
-# Close the server
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+    # Close the server
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()
