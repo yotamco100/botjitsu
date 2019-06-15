@@ -44,17 +44,17 @@ async def check_winner(p1, p2):
     # If there is no winner
     if winner == 0:
         print('Stalemate!')
-        return
+        return winner, False
 
     print(f"Player {winner} wins the round!")
     # If the player that won the round also won the game
 
+    players[winner].add_winning_card()
     print()
     print('Won cards:')
     for card in players[winner].won_cards:
-        print(card)
+        print(str(card))
 
-    players[winner].add_winning_card()
     is_win = players[winner].check_win()
     # Returns None if there is no winner
     
@@ -71,15 +71,16 @@ async def run_game():
     await p1.write_line('Game Started!')
     await p2.write_line('Game Started!')
 
+    is_win = False
     winner = None
     # While the game runs
-    while winner is None:
+    while not is_win:
         p1.start_turn()
         p2.start_turn()
 
         if is_reversed:
-            p1.write('* ')
-            p2.write('* ')
+            await p1.write_line('*')
+            await p2.write_line('*')
 
         await p1.write_line(p1.pretty_hand())
         await p2.write_line(p2.pretty_hand())
@@ -89,18 +90,17 @@ async def run_game():
         await p2.draw_card()
 
         winner, is_win = await check_winner(p1, p2)
-        winner_notification = f"Player {winner} wins!"
+        winner_notification = f"Player {winner} wins the round!"
         await p1.write_line(winner_notification)
         await p2.write_line(winner_notification)
 
-        # "winner" won the game
-        if is_win:
-            break
-
         is_reversed = False
         # Reverse is activated if a card with a value of 10 and over is played
-        if p1.current_card.number >= 10 or p2.current_card.number >= 10:
+        if winner != 0 and players[winner].current_card.number >= 10:
             is_reversed = True
+    winner_notification = f"Player {winner} won!"
+    await p1.write_line(winner_notification)
+    await p2.write_line(winner_notification)
 
 
 async def receive_connection(reader, writer):
@@ -121,7 +121,7 @@ async def receive_connection(reader, writer):
 
 
 if __name__ == "__main__":
-    host, port = '0.0.0.0', 14683
+    host, port = '127.0.0.1', 14683
     print(f"Server opened with IP {host} and port {port}")
 
     loop = asyncio.get_event_loop()

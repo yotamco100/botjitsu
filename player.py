@@ -65,12 +65,11 @@ class Player():
 
     async def draw_card(self):
         """Plays a card from the Player's hand."""
-        card_index = int(await self.read())
-
         try:
+            card_index = int(await self.read())
             chosen_card = self._hand[card_index]
         # If the index does not exist, choose a random card instead
-        except KeyError:
+        except (KeyError, ValueError):
             chosen_card = random.choice(self._hand)
 
         self._hand.remove(chosen_card)
